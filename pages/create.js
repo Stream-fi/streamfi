@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Flex, Text, Input, Button, Image } from "@chakra-ui/react";
+import { Flex, Text, Input, Button, Image, Select } from "@chakra-ui/react";
 import { Spinner } from "react-bootstrap";
 import { useToast } from "@chakra-ui/react";
 import { calculateFlowRate, init } from "@/utils";
@@ -11,19 +11,6 @@ async function deleteExistingFlow(
   setFailure,
   initiated
 ) {
-  // const provider = new ethers.providers.Web3Provider(window.ethereum);
-  // await provider.send("eth_requestAccounts", []);
-  // const signer = provider.getSigner();
-  // const chainId = await window.ethereum.request({ method: "eth_chainId" });
-  // const sf = await Framework.create({
-  //   chainId: Number(chainId),
-  //   provider: provider,
-  // });
-  // const superSigner = sf.createSigner({ signer: signer });
-  // console.log(signer);
-  // console.log(await superSigner.getAddress());
-  // const daix = await sf.loadSuperToken("fDAIx");
-  // console.log(daix);
   const superSigner = initiated[0];
   const daix = initiated[1];
   try {
@@ -50,44 +37,56 @@ async function createNewFlow(
   flowRateCalc,
   setSuccess,
   setFailure,
-  initiated
+  initiated,
+  token
 ) {
-  // const provider = new ethers.providers.Web3Provider(window.ethereum);
-  // await provider.send("eth_requestAccounts", []);
-  // const signer = provider.getSigner();
-  // const chainId = await window.ethereum.request({ method: "eth_chainId" });
-  // const sf = await Framework.create({
-  //   chainId: Number(chainId),
-  //   provider: provider,
-  // });
-  // const superSigner = sf.createSigner({ signer: signer });
-  // console.log(signer);
-  // console.log(await superSigner.getAddress());
-  // const daix = await sf.loadSuperToken("fDAIx");
-  // console.log(daix);
-  // console.log(typeof flowRateCalc)
-  // console.log(flowRateCalc);
-  // console.log(flowRateCalc.toString());
   const superSigner = initiated[0];
-  const daix = initiated[1];
+  const streamToken = initiated[1][token];
+  console.log(token);
+  console.log(streamToken);
+  const signer = initiated[2];
+  const address = initiated[3];
   try {
-    const createFlowOperation = daix.createFlow({
-      sender: await superSigner.getAddress(),
+    const res = await streamToken.getFlow({
+      sender: address,
       receiver: recipient,
-      flowRate: flowRateCalc,
-      // userData?: string
+      providerOrSigner: signer,
     });
+    console.log(res.flowRate);
+    if (res.flowRate == 0) {
+      const createFlowOperation = streamToken.createFlow({
+        sender: await superSigner.getAddress(),
+        receiver: recipient,
+        flowRate: flowRateCalc,
+      });
+      console.log(createFlowOperation);
+      console.log("Creating your stream...");
 
-    console.log(createFlowOperation);
-    console.log("Creating your stream...");
+      const result = await createFlowOperation.exec(superSigner);
+      console.log(result);
 
-    const result = await createFlowOperation.exec(superSigner);
-    console.log(result);
-
-    console.log(
-      `Congrats - you've just created a money stream!
+      console.log(
+        `Congrats - you've just created a money stream!
     `
-    );
+      );
+    } else {
+      const updateFlowOperation = streamToken.updateFlow({
+        sender: await superSigner.getAddress(),
+        receiver: recipient,
+        flowRate: flowRateCalc,
+      });
+      console.log(updateFlowOperation);
+      console.log("Updating your stream...");
+
+      const result = await updateFlowOperation.exec(superSigner);
+      console.log(result);
+
+      console.log(
+        `Congrats - you've just updated your money stream!
+    `
+      );
+    }
+
     setSuccess(true);
   } catch (error) {
     console.log(
@@ -107,6 +106,7 @@ export default function CreateFlow() {
   const [flowRate, setFlowRate] = useState("");
   const [initiated, setInitiated] = useState();
   const [flowRateCalc, setFlowRateCalc] = useState("");
+  const [token, setToken] = useState();
 
   useEffect(() => {
     (async function () {
@@ -149,6 +149,11 @@ export default function CreateFlow() {
     );
   }
 
+  const handleTokenChange = (e) => {
+    setToken(e.target.value);
+    console.log(e.target.value);
+  };
+
   const handleRecipientChange = (e) => {
     setRecipient(() => ([e.target.name] = e.target.value));
   };
@@ -160,7 +165,6 @@ export default function CreateFlow() {
 
   return (
     <>
-      
       <Flex bg={"#0F1215"} flexDir={"column"} align={"center"} height="100vh">
         <Header />
         <Flex marginTop={["90px"]} flexDir={"column"} gap={"37px"}>
@@ -204,6 +208,15 @@ export default function CreateFlow() {
               onChange={handleFlowRateChange}
               placeholder="Enter a flowRate in tokens/month"
             />
+            <Select
+              onChange={handleTokenChange}
+              color={"white"}
+              placeholder="Select Token"
+            >
+              <option value="fdaix">fDAIx</option>
+              <option value="ftusdx">fTUSDx</option>
+              <option value="fusdcx">fUSDCx</option>
+            </Select>
           </Flex>
           <CreateButton
             bg={"none"}
@@ -223,7 +236,8 @@ export default function CreateFlow() {
                 flowRateCalc,
                 setSuccess,
                 setFailure,
-                initiated
+                initiated,
+                token
               );
               setTimeout(() => {
                 setIsButtonLoading(false);

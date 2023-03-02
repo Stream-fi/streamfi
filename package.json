@@ -25,6 +25,7 @@
     "react-bootstrap": "^2.7.0",
     "react-dom": "18.2.0",
     "react-query": "^3.39.3",
+    "urql": "^3.0.3",
     "wagmi": "^0.10.14"
   },
   "devDependencies": {

@@ -2,8 +2,6 @@ import { Flex, Image, Text, Button } from "@chakra-ui/react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 export default function Header() {
-  const [stream, setStream] = useState(true);
-  const [dashboard, setDashboard] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [currentAccount, setCurrentAccount] = useState("");
   
@@ -57,15 +55,6 @@ export default function Header() {
   const disconnectHandler = () => {
     setIsConnected(false);
   };
-  const streamClick = () => {
-    setStream(true);
-    setDashboard(false);
-  };
-
-  const dashClick = () => {
-    setStream(false);
-    setDashboard(true);
-  };
   return (
     <>
       <Flex
@@ -86,8 +75,6 @@ export default function Header() {
               fontSize={"20px"}
               fontWeight={"medium"}
               whiteSpace={"nowrap"}
-              onClick={streamClick}
-              textDecor={stream ? "underline" : ""}
             >
               Create Stream
             </Text>
@@ -96,8 +83,6 @@ export default function Header() {
             <Text
               fontSize={"20px"}
               fontWeight={"medium"}
-              textDecor={dashboard ? "underline" : ""}
-              onClick={dashClick}
             >
               Dashboard
             </Text>
