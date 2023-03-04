@@ -8,8 +8,10 @@ import {
   GridItem,
   Divider,
   Spinner,
+  Text,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
+import { useAccount } from "wagmi";
 
 const Streams = ({ flow, type, initiated, tokenBalances }) => {
   const [success, setSuccess] = useState(false);
@@ -131,6 +133,12 @@ export default function Dashboard() {
   const [inflow, setInflow] = useState([]);
   const [outflow, setOutflow] = useState([]);
   const [tokenBalances, setTokenBalances] = useState();
+  const { address, isConnected } = useAccount();
+  const [auth, setAuth] = useState();
+
+  useEffect(() => {
+    setAuth(isConnected);
+  }, [isConnected]);
 
   useEffect(() => {
     (async function () {
@@ -202,62 +210,70 @@ export default function Dashboard() {
         color={"white"}
       >
         <Header />
-        <Flex
-          flexDir={"column"}
-          w={"910px"}
-          gap={"35px"}
-          bg={"#0F1215"}
-          marginTop={"100px"}
-        >
-          <Grid
-            templateColumns="repeat(5, 1fr)"
-            fontSize={"18px"}
-            fontWeight={"medium"}
+        {auth ? (
+          <Flex
+            flexDir={"column"}
+            w={"910px"}
+            gap={"35px"}
+            bg={"#0F1215"}
+            marginTop={"100px"}
           >
-            <Flex>
-              <GridItem whiteSpace={"nowrap"} w={"182px"} align={"center"}>
-                Asset
-              </GridItem>
-              <GridItem whiteSpace={"nowrap"} w={"182px"} align={"center"}>
-                Balance
-              </GridItem>
-              <GridItem whiteSpace={"nowrap"} w={"182px"} align={"center"}>
-                Sender/Reciever
-              </GridItem>
-              <GridItem whiteSpace={"nowrap"} w={"182px"} align={"center"}>
-                Inflow/Outflow
-              </GridItem>
-              <GridItem
-                whiteSpace={"nowrap"}
-                w={"182px"}
-                align={"center"}
-              ></GridItem>
-            </Flex>
-          </Grid>
-          <Divider opacity={"60%"} />
-          {initiated ? (
-            <>
-              <Streams
-                flow={inflow}
-                type="inflow"
-                initiated={initiated}
-                tokenBalances={tokenBalances}
-              />
-              <Streams
-                flow={outflow}
-                type="outflow"
-                initiated={initiated}
-                tokenBalances={tokenBalances}
-              />
-            </>
-          ) : (
-            <>
-              <Flex justify={"center"}>
-                <Spinner size={"lg"} />
+            <Grid
+              templateColumns="repeat(5, 1fr)"
+              fontSize={"18px"}
+              fontWeight={"medium"}
+            >
+              <Flex>
+                <GridItem whiteSpace={"nowrap"} w={"182px"} align={"center"}>
+                  Asset
+                </GridItem>
+                <GridItem whiteSpace={"nowrap"} w={"182px"} align={"center"}>
+                  Balance
+                </GridItem>
+                <GridItem whiteSpace={"nowrap"} w={"182px"} align={"center"}>
+                  Sender/Reciever
+                </GridItem>
+                <GridItem whiteSpace={"nowrap"} w={"182px"} align={"center"}>
+                  Inflow/Outflow
+                </GridItem>
+                <GridItem
+                  whiteSpace={"nowrap"}
+                  w={"182px"}
+                  align={"center"}
+                ></GridItem>
               </Flex>
-            </>
-          )}
-        </Flex>
+            </Grid>
+            <Divider opacity={"60%"} />
+            {initiated ? (
+              <>
+                <Streams
+                  flow={inflow}
+                  type="inflow"
+                  initiated={initiated}
+                  tokenBalances={tokenBalances}
+                />
+                <Streams
+                  flow={outflow}
+                  type="outflow"
+                  initiated={initiated}
+                  tokenBalances={tokenBalances}
+                />
+              </>
+            ) : (
+              <>
+                <Flex justify={"center"}>
+                  <Spinner size={"lg"} />
+                </Flex>
+              </>
+            )}
+          </Flex>
+        ) : (
+          <Flex marginTop={"200px"} w={"518px"} color={"white"}>
+            <Text fontSize={"28px"} fontWeight={"medium"}>
+              Connect Wallet to start using streamfi
+            </Text>
+          </Flex>
+        )}
       </Flex>
     </>
   );
