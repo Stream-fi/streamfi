@@ -1,10 +1,14 @@
 import { Flex, Image, Text, Button } from "@chakra-ui/react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { ConnectBtn } from "./custombutton";
+import { useRouter } from "next/router";
 export default function Header() {
+  const router = useRouter();
   const [isConnected, setIsConnected] = useState(false);
   const [currentAccount, setCurrentAccount] = useState("");
-  
+  const [header, setHeader] = useState("");
+
   const checkIfWalletIsConnected = async () => {
     console.log("runs");
     const { ethereum } = window;
@@ -55,6 +59,16 @@ export default function Header() {
   const disconnectHandler = () => {
     setIsConnected(false);
   };
+
+  useEffect(() => {
+    const path = router.asPath;
+    if (path == "/create") {
+      setHeader("create");
+    } else if (path == "/dashboard") {
+      setHeader("dashboard");
+    }
+  }, []);
+
   return (
     <>
       <Flex
@@ -68,27 +82,31 @@ export default function Header() {
         <Flex h={"44px"} marginTop={"45px"} gap={"935px"}>
           <Flex align={"center"} gap={"16px"}>
             <Link href={"./"}>
-            <Image src={"logo.svg"} alt={"logo"} h={"20px"} w={"28.57px"} />
+              <Image src={"logo.svg"} alt={"logo"} h={"20px"} w={"28.57px"} />
             </Link>
             <Link href={"./create"}>
-            <Text
-              fontSize={"20px"}
-              fontWeight={"medium"}
-              whiteSpace={"nowrap"}
-            >
-              Create Stream
-            </Text>
+              <Text
+                fontSize={"20px"}
+                fontWeight={"medium"}
+                whiteSpace={"nowrap"}
+                opacity={header == "create" ? "100%" : "70%"}
+                selected={"100%"}
+              >
+                Create Stream
+              </Text>
             </Link>
             <Link href={"./dashboard"}>
-            <Text
-              fontSize={"20px"}
-              fontWeight={"medium"}
-            >
-              Dashboard
-            </Text>
+              <Text
+                fontSize={"20px"}
+                fontWeight={"medium"}
+                opacity={header == "dashboard" ? "100%" : "70%"}
+              >
+                Dashboard
+              </Text>
             </Link>
           </Flex>
-          <Button
+          <ConnectBtn />
+          {/* <Button
             bg={"none"}
             height={["30px", "30px", "40px"]}
             width={["110px", "110px", "190px"]}
@@ -106,7 +124,7 @@ export default function Header() {
                   38
                 )}`
               : "Connect Wallet"}
-          </Button>
+          </Button> */}
         </Flex>
       </Flex>
       {/* <Flex marginTop={"100px"}>
