@@ -20,7 +20,11 @@ export default function index() {
             </Text>
           </Flex>
 
-          <Link href="./dashboard">
+          <a
+            href="https://twitter.com/AayushCodes"
+            target={"_blank"}
+            rel={"noreferrer"}
+          >
             <Button
               borderRadius={"7px"}
               bg={"rgba(255,255,255,0.02)"}
@@ -31,12 +35,15 @@ export default function index() {
               align={"center"}
               fontFamily={"22px"}
               fontWeight={"400"}
-              _hover={{}}
+              _hover={{
+                background: "rgba(255,255,255,0.04)",
+                boxShadow: "0px 1px 12px rgba(255,255,255,0.05)",
+              }}
               _active={{}}
             >
               Contact Us
             </Button>
-          </Link>
+          </a>
         </Flex>
 
         <Flex
@@ -66,7 +73,7 @@ export default function index() {
                 align={"center"}
                 fontFamily={"22px"}
                 fontWeight={"700"}
-                _hover={{}}
+                _hover={{ boxShadow: "0px 1px 12px rgba(255,255,255,0.42)" }}
                 _active={{}}
               >
                 Launch App
@@ -82,7 +89,10 @@ export default function index() {
               align={"center"}
               fontFamily={"22px"}
               fontWeight={"700"}
-              _hover={{}}
+              _hover={{
+                background: "rgba(255,255,255,0.04)",
+                boxShadow: "0px 1px 12px rgba(255,255,255,0.05)",
+              }}
               _active={{}}
             >
               Learn More
@@ -130,7 +140,6 @@ export default function index() {
     </>
   );
 }
-
 
 // export default function Home() {
 //   return (

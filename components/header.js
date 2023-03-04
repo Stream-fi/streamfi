@@ -91,6 +91,7 @@ export default function Header() {
                 whiteSpace={"nowrap"}
                 opacity={header == "create" ? "100%" : "70%"}
                 selected={"100%"}
+                _hover={{ opacity: "80%" }}
               >
                 Create Stream
               </Text>
@@ -100,6 +101,7 @@ export default function Header() {
                 fontSize={"20px"}
                 fontWeight={"medium"}
                 opacity={header == "dashboard" ? "100%" : "70%"}
+                _hover={{ opacity: "80%" }}
               >
                 Dashboard
               </Text>

@@ -44,8 +44,11 @@ export const ConnectBtn = () => {
                     align={"center"}
                     fontFamily={"22px"}
                     fontWeight={"400"}
-                    _hover={{}}
                     _active={{}}
+                    _hover={{
+                      background: "rgba(255,255,255,0.04)",
+                      boxShadow: "0px 1px 12px rgba(255,255,255,0.05)",
+                    }}
                   >
                     Connect Wallet
                   </Button>
@@ -65,8 +68,11 @@ export const ConnectBtn = () => {
                     align={"center"}
                     fontFamily={"22px"}
                     fontWeight={"400"}
-                    _hover={{}}
                     _active={{}}
+                    _hover={{
+                      background: "rgba(255,255,255,0.04)",
+                      boxShadow: "0px 1px 12px rgba(255,255,255,0.05)",
+                    }}
                   >
                     Wrong network
                   </Button>
@@ -86,8 +92,11 @@ export const ConnectBtn = () => {
                     align={"center"}
                     fontFamily={"22px"}
                     fontWeight={"400"}
-                    _hover={{}}
                     _active={{}}
+                    _hover={{
+                      background: "rgba(255,255,255,0.04)",
+                      boxShadow: "0px 1px 12px rgba(255,255,255,0.05)",
+                    }}
                   >
                     Connected
                   </Button>
