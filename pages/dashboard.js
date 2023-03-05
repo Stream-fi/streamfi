@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { useAccount } from "wagmi";
+import { Loading } from "@nextui-org/react";
 
 const Streams = ({ flow, type, initiated, tokenBalances }) => {
   const [success, setSuccess] = useState(false);
@@ -262,7 +263,7 @@ export default function Dashboard() {
             ) : (
               <>
                 <Flex justify={"center"}>
-                  <Spinner size={"lg"} />
+                  <Loading type="points-opacity" size={"lg"} color={"white"} />
                 </Flex>
               </>
             )}

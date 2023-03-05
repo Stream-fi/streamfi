@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { Flex, Text, Input, Button, Image, Select } from "@chakra-ui/react";
 import { Spinner } from "react-bootstrap";
@@ -5,6 +6,7 @@ import { useToast } from "@chakra-ui/react";
 import { calculateFlowRate, init } from "@/utils";
 import Header from "@/components/header";
 import { useAccount } from "wagmi";
+import { Dropdown } from "@nextui-org/react";
 
 async function deleteExistingFlow(
   recipient,
@@ -110,6 +112,12 @@ export default function CreateFlow() {
   const [initiated, setInitiated] = useState();
   const [flowRateCalc, setFlowRateCalc] = useState("");
   const [token, setToken] = useState();
+  const [selected, setSelected] = React.useState(new Set(["Select Token"]));
+
+  const selectedValue = React.useMemo(
+    () => Array.from(selected).join(", ").replaceAll("_", " "),
+    [selected]
+  );
 
   useEffect(() => {
     (async function () {
@@ -148,6 +156,11 @@ export default function CreateFlow() {
     setFailure(false);
   }, [failure, toast]);
 
+  useEffect(() => {
+    const temp = selectedValue.toLowerCase();
+    setToken(temp);
+  }, [selected]);
+
   function CreateButton({ isLoading, children, ...props }) {
     return (
       <Button variant="success" className="button" {...props}>
@@ -155,11 +168,6 @@ export default function CreateFlow() {
       </Button>
     );
   }
-
-  const handleTokenChange = (e) => {
-    setToken(e.target.value);
-    console.log(e.target.value);
-  };
 
   const handleRecipientChange = (e) => {
     setRecipient(() => ([e.target.name] = e.target.value));
@@ -224,7 +232,8 @@ export default function CreateFlow() {
                 _placeholder={{ color: "rgba(255,255,255,0.60)" }}
               />
             </Flex>
-            <Select
+
+            {/* <Select
               borderRadius={"6px"}
               width={["200px", "200px", "484px"]}
               height={["40px", "40px", "62px"]}
@@ -243,7 +252,42 @@ export default function CreateFlow() {
               <option value="fusdcx" style={{ color: "black" }}>
                 fUSDCx
               </option>
-            </Select>
+            </Select> */}
+
+            <Dropdown>
+              <Dropdown.Button
+                flat
+                css={{
+                  height: "62px",
+                  width: "484px",
+                  background: "none",
+                  border: "1px solid rgba(255,255,255,0.40)",
+                  borderRadius: "6px",
+                  color: "white",
+                  fontSize: "16px",
+                  focusBorderColor: "rgba(255,255,255,0.40)",
+                }}
+              >
+                {selectedValue}
+              </Dropdown.Button>
+              <Dropdown.Menu
+                aria-label="Static Actions"
+                disallowEmptySelection
+                selectionMode="single"
+                selectedKeys={selected}
+                onSelectionChange={setSelected}
+              >
+                <Dropdown.Item key="fDAIx" value="fdaix">
+                  fDAIx
+                </Dropdown.Item>
+                <Dropdown.Item key="fTUSDx" value="ftusdx">
+                  fTUSDx
+                </Dropdown.Item>
+                <Dropdown.Item key="fUSDCx" value="fusdcx">
+                  fUSDCx
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
 
             <CreateButton
               height={["40px", "40px", "62px"]}
