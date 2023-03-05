@@ -29,7 +29,7 @@ const Streams = ({ flow, type, initiated, tokenBalances }) => {
         animate={{ y: "0", opacity: "100%" }}
         transition={{ delay: "0.15" }}
       >
-        <Flex flexDir={"column"}>
+        <Flex flexDir={"column"} marginTop={"0px"}>
           {flow.map((_in) => (
             <Grid
               templateColumns="repeat(5, 1fr)"
@@ -38,7 +38,8 @@ const Streams = ({ flow, type, initiated, tokenBalances }) => {
               w={"910px"}
               fontSize={"18px"}
               fontWeight={"medium"}
-              paddingBottom={"30px"}
+              paddingBottom={"35px"}
+              paddingTop={"35px"}
               borderBottom={"1px solid rgba(255,255,255,0.2)"}
               gap={"202px"}
               key={_in.token.symbol}
@@ -71,7 +72,10 @@ const Streams = ({ flow, type, initiated, tokenBalances }) => {
                     <Image
                       cursor={deleting ? "not-allowed" : "pointer"}
                       opacity={"80%"}
-                      _hover={{ opacity: deleting ? "80%" : "100%" }}
+                      _hover={{
+                        opacity: deleting ? "80%" : "100%",
+                        transform: "scale(1.05)",
+                      }}
                       src={"del.svg"}
                       alt="delete"
                       onClick={() =>
@@ -215,7 +219,6 @@ export default function Dashboard() {
           <Flex
             flexDir={"column"}
             w={"910px"}
-            gap={"35px"}
             bg={"#0F1215"}
             marginTop={"100px"}
           >
@@ -244,7 +247,7 @@ export default function Dashboard() {
                 ></GridItem>
               </Flex>
             </Grid>
-            <Divider opacity={"60%"} />
+            <Divider marginTop={"35px"} opacity={"60%"} />
             {initiated ? (
               <>
                 <Streams
