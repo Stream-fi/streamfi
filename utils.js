@@ -28,7 +28,7 @@ export function calculateFlowRate(amount, setFlowRate, setFlowRateCalc) {
 
 export async function init() {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
-  await provider.send("eth_requestAccounts", []);
+  // await provider.send("eth_requestAccounts", []);
   const signer = provider.getSigner();
   const address = await signer.getAddress();
   const chainId = await window.ethereum.request({ method: "eth_chainId" });

@@ -146,10 +146,12 @@ export default function Dashboard() {
   }, [isConnected]);
 
   useEffect(() => {
-    (async function () {
-      setInitiated(await init());
-    })();
-  }, []);
+    if (auth) {
+      (async function () {
+        setInitiated(await init());
+      })();
+    }
+  }, [auth]);
 
   useEffect(() => {
     (async function () {
@@ -211,7 +213,6 @@ export default function Dashboard() {
         bg={"#0F1215"}
         flexDir={"column"}
         align={"center"}
-        height="100vh"
         color={"white"}
       >
         <Header />
@@ -265,7 +266,7 @@ export default function Dashboard() {
               </>
             ) : (
               <>
-                <Flex justify={"center"}>
+                <Flex justify={"center"} marginTop={"40px"}>
                   <Loading type="points-opacity" size={"lg"} color={"white"} />
                 </Flex>
               </>

@@ -9,34 +9,34 @@ export default function Header() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [header, setHeader] = useState("");
 
-  const checkIfWalletIsConnected = async () => {
-    console.log("runs");
-    const { ethereum } = window;
+  // const checkIfWalletIsConnected = async () => {
+  //   console.log("runs");
+  //   const { ethereum } = window;
 
-    if (!ethereum) {
-      console.log("Make sure you have metamask!");
-      return;
-    } else {
-      console.log("We have the ethereum object", ethereum);
-      setIsConnected(true);
-    }
+  //   if (!ethereum) {
+  //     console.log("Make sure you have metamask!");
+  //     return;
+  //   } else {
+  //     console.log("We have the ethereum object", ethereum);
+  //     setIsConnected(true);
+  //   }
 
-    const accounts = await window.ethereum.request({ method: "eth_accounts" });
-    const chain = await window.ethereum.request({ method: "eth_chainId" });
-    let chainId = chain;
-    console.log("chain ID:", chain);
-    console.log("global Chain Id:", chainId);
-    if (accounts.length !== 0) {
-      console.log("Found an authorized account:", accounts[0]);
-      setCurrentAccount(accounts[0]);
-    } else {
-      console.log("No authorized account found");
-    }
-  };
+  //   const accounts = await window.ethereum.request({ method: "eth_accounts" });
+  //   const chain = await window.ethereum.request({ method: "eth_chainId" });
+  //   let chainId = chain;
+  //   console.log("chain ID:", chain);
+  //   console.log("global Chain Id:", chainId);
+  //   if (accounts.length !== 0) {
+  //     console.log("Found an authorized account:", accounts[0]);
+  //     setCurrentAccount(accounts[0]);
+  //   } else {
+  //     console.log("No authorized account found");
+  //   }
+  // };
 
-  useEffect(() => {
-    checkIfWalletIsConnected();
-  }, []);
+  // useEffect(() => {
+  //   checkIfWalletIsConnected();
+  // }, []);
 
   const connectWallet = async () => {
     try {
@@ -67,7 +67,7 @@ export default function Header() {
     } else if (path == "/dashboard") {
       setHeader("dashboard");
     }
-  }, []);
+  }, [router.asPath]);
 
   return (
     <>

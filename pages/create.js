@@ -8,33 +8,6 @@ import Header from "@/components/header";
 import { useAccount } from "wagmi";
 import { Dropdown } from "@nextui-org/react";
 
-async function deleteExistingFlow(
-  recipient,
-  setSuccess,
-  setFailure,
-  initiated
-) {
-  const superSigner = initiated[0];
-  const daix = initiated[1];
-  try {
-    const deleteFlowOperation = daix.deleteFlow({
-      sender: await superSigner.getAddress(),
-      receiver: recipient,
-    });
-
-    console.log(deleteFlowOperation);
-    console.log("Deleting your stream...");
-
-    const result = await deleteFlowOperation.exec(superSigner);
-    console.log(result);
-    console.log("Congrats! You just deleted a money stream");
-    setSuccess(true);
-  } catch (e) {
-    console.log(e);
-    setFailure(true);
-  }
-}
-
 async function createNewFlow(
   recipient,
   flowRateCalc,
@@ -120,10 +93,12 @@ export default function CreateFlow() {
   );
 
   useEffect(() => {
+    if (auth) {
     (async function () {
       setInitiated(await init());
     })();
-  }, []);
+  }
+  }, [auth]);
 
   useEffect(() => {
     setAuth(isConnected);
@@ -159,7 +134,7 @@ export default function CreateFlow() {
   useEffect(() => {
     const temp = selectedValue.toLowerCase();
     setToken(temp);
-  }, [selected]);
+  }, [selected, selectedValue]);
 
   function CreateButton({ isLoading, children, ...props }) {
     return (
