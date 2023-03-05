@@ -213,6 +213,7 @@ export default function Dashboard() {
         bg={"#0F1215"}
         flexDir={"column"}
         align={"center"}
+        minHeight="100vh"
         color={"white"}
       >
         <Header />
