@@ -223,6 +223,7 @@ export default function Dashboard() {
             w={"910px"}
             bg={"#0F1215"}
             marginTop={"100px"}
+            marginBottom={"100px"}
           >
             <Grid
               templateColumns="repeat(5, 1fr)"
