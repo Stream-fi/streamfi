@@ -94,10 +94,10 @@ export default function CreateFlow() {
 
   useEffect(() => {
     if (auth) {
-    (async function () {
-      setInitiated(await init());
-    })();
-  }
+      (async function () {
+        setInitiated(await init());
+      })();
+    }
   }, [auth]);
 
   useEffect(() => {
@@ -208,27 +208,6 @@ export default function CreateFlow() {
               />
             </Flex>
 
-            {/* <Select
-              borderRadius={"6px"}
-              width={["200px", "200px", "484px"]}
-              height={["40px", "40px", "62px"]}
-              border={"1px solid rgba(255,255,255,0.40)"}
-              onChange={handleTokenChange}
-              color={"white"}
-              placeholder="Select Token"
-              focusBorderColor={"rgba(255, 255, 255, 0.5)"}
-            >
-              <option value="fdaix" style={{ color: "black" }}>
-                fDAIx
-              </option>
-              <option value="ftusdx" style={{ color: "black" }}>
-                fTUSDx
-              </option>
-              <option value="fusdcx" style={{ color: "black" }}>
-                fUSDCx
-              </option>
-            </Select> */}
-
             <Dropdown>
               <Dropdown.Button
                 flat
@@ -300,52 +279,6 @@ export default function CreateFlow() {
             </Text>
           </Flex>
         )}
-
-        {/* <Flex marginTop={["90px"]} flexDir={"column"} gap={"37px"}>
-          <Text fontSize={["24px"]} color={"white"}>
-            Delete Stream
-          </Text>
-          <Flex gap={"13px"} flexDir={"column"}>
-            <Text fontSize={["14px", "14px", "20px"]} color={"white"}>
-              Reciever Wallet Address
-            </Text>
-            <Input
-              width={["200px", "200px", "484px"]}
-              height={["40px", "40px", "50px"]}
-              border={"1px solid rgba(255, 255, 255, 0.2)"}
-              borderRadius={"6px"}
-              bg={"none"}
-              color={"white"}
-              fontSize={["12px", "12px", "18px"]}
-              _hover={{}}
-              focusBorderColor={"rgba(255, 255, 255, 0.5)"}
-              value={recipient}
-              onChange={handleRecipientChange}
-              placeholder="0x..."
-            />
-          </Flex>
-          <CreateButton
-            bg={"none"}
-            height={["40px", "40px", "50px"]}
-            width={["200px", "200px", "484px"]}
-            marginRight={["8px", "8px", "16px"]}
-            border={"1px solid rgba(255, 255, 255, 0.2)"}
-            justify={"center"}
-            color={"white"}
-            borderRadius={"10px"}
-            fontSize={["12px", "12px", "20px"]}
-            _hover={{}}
-            onClick={() => {
-              setIsButtonLoading(true);
-              deleteExistingFlow(recipient, setSuccess, setFailure, initiated);
-              setTimeout(() => {
-                setIsButtonLoading(false);
-              }, 1000);
-            }}
-          >
-            Click to delete Stream
-          </CreateButton>
-        </Flex> */}
       </Flex>
     </>
   );

@@ -8,7 +8,6 @@ export function calculateFlowRate(amount, setFlowRate, setFlowRateCalc) {
   if (typeof Number(amount) !== "number" || isNaN(Number(amount)) === true) {
     alert("You can only calculate a flowRate based on a number");
     setFlowRate("");
-    setFlowRateDisplay("");
     return;
   } else if (typeof Number(amount) === "number") {
     if (Number(amount) === 0) {
@@ -17,9 +16,8 @@ export function calculateFlowRate(amount, setFlowRate, setFlowRateCalc) {
     const amountInWei = ethers.BigNumber.from(
       ethers.utils.parseEther(String(amount))
     );
-    console.log(amountInWei.toString());
     const calculatedFlowRate = amountInWei.div(3600 * 24 * 30);
-    console.log(calculatedFlowRate);
+    console.log(parseInt(calculatedFlowRate._hex));
     if (calculatedFlowRate != undefined) {
       setFlowRateCalc(calculatedFlowRate);
     }
@@ -37,18 +35,12 @@ export async function init() {
     provider: provider,
   });
   const superSigner = sf.createSigner({ signer: signer });
-  console.log(signer);
   console.log(await superSigner.getAddress());
   const fDAIx = await sf.loadSuperToken("fDAIx");
   const fTUSDx = await sf.loadSuperToken("fTUSDx");
   const fUSDCx = await sf.loadSuperToken("fUSDCx");
   const tokens = { fdaix: fDAIx, ftusdx: fTUSDx, fusdcx: fUSDCx };
-  console.log(tokens);
-  console.log(fDAIx.contract);
-  console.log(fTUSDx.contract);
-  console.log(fUSDCx.contract);
-  
-  return [superSigner, tokens, signer, address];
+  return [superSigner, tokens, signer, address, provider];
 }
 
 export async function getBalances(initiated) {
