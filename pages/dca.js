@@ -13,7 +13,8 @@ const getSwappedTokens = async (
   dca_address,
   setWethBal,
   setFdaiBal,
-  setAvailableFdai
+  setAvailableFdai,
+  setLastTimestamp
 ) => {
   const signer = initiated[2];
   const address = initiated[3];
@@ -23,6 +24,12 @@ const getSwappedTokens = async (
   setFdaiBal(tokens[1]);
   const available = await contract.calculateAmount(address);
   setAvailableFdai(available);
+  const timestamp = await contract.getUserTimestamp(address);
+  const newTimestamp = parseInt(timestamp._hex)
+  console.log(newTimestamp)
+  const formattedTimestamp = new Date(newTimestamp*1000);
+  console.log(formattedTimestamp)
+  setLastTimestamp(formattedTimestamp.toString())
 };
 
 const approve = async (initiated, flowRateCalc, dca_address, setApproval) => {
@@ -105,8 +112,9 @@ export default function DCA() {
   const [flowRateCalc, setFlowRateCalc] = useState("");
   const [wethBal, setWethBal] = useState();
   const [fdaiBal, setFdaiBal] = useState();
+  const [lastTimestamp, setLastTimestamp] = useState()
   const [availableFdai, setAvailableFdai] = useState();
-  const dca_address = "0x4fAFB704931c615BDB0D983b588052656c723bF9";
+  const dca_address = "0x90654b30AF2cB9108C9865fce7Bad9D2a8A8d528";
   const cfa_address = "0xcfA132E353cB4E398080B9700609bb008eceB125";
 
   const handleFlowRateChange = (e) => {
@@ -141,7 +149,8 @@ export default function DCA() {
           dca_address,
           setWethBal,
           setFdaiBal,
-          setAvailableFdai
+          setAvailableFdai,
+          setLastTimestamp
         );
       })();
     }
@@ -283,6 +292,28 @@ export default function DCA() {
                     />
                   ) : (
                     parseInt(availableFdai._hex)
+                  )}
+                </Text>
+                <Text
+                  fontSize={["14px", "14px", "20px"]}
+                  color={"white"}
+                  fontWeight={"medium"}
+                >
+                  Last Swap
+                </Text>
+                <Text
+                  fontSize={["14px", "14px", "20px"]}
+                  color={"white"}
+                  fontWeight={"medium"}
+                >
+                  {lastTimestamp == undefined ? (
+                    <Loading
+                      type="points-opacity"
+                      size={"lg"}
+                      color={"white"}
+                    />
+                  ) : (
+                    lastTimestamp
                   )}
                 </Text>
               </>
