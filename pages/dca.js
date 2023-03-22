@@ -247,7 +247,7 @@ export default function DCA() {
                       color={"white"}
                     />
                   ) : (
-                    parseInt(wethBal._hex)
+                    parseInt(wethBal._hex) / 1e18
                   )}
                 </Text>
                 <Text
@@ -269,7 +269,7 @@ export default function DCA() {
                       color={"white"}
                     />
                   ) : (
-                    parseInt(fdaiBal._hex)
+                    parseInt(fdaiBal._hex) / 1e18
                   )}
                 </Text>
                 <Text
@@ -291,7 +291,7 @@ export default function DCA() {
                       color={"white"}
                     />
                   ) : (
-                    parseInt(availableFdai._hex)
+                    parseInt(availableFdai._hex) / 1e18
                   )}
                 </Text>
                 <Text
@@ -306,14 +306,14 @@ export default function DCA() {
                   color={"white"}
                   fontWeight={"medium"}
                 >
-                  {lastTimestamp == undefined ? (
+                {lastTimestamp == undefined ? (
                     <Loading
                       type="points-opacity"
                       size={"lg"}
                       color={"white"}
                     />
                   ) : (
-                    lastTimestamp
+                    wethBal == 0 ? "none" : lastTimestamp
                   )}
                 </Text>
               </>
