@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import abi_dca from "../abi_dca.json";
 import Header from "@/components/header";
 import { useState, useEffect } from "react";
-import { Flex, Input, Text, Button } from "@chakra-ui/react";
+import { Flex, Input, Text, Button, Divider } from "@chakra-ui/react";
 import { useAccount } from "wagmi";
 import { init, calculateFlowRate } from "@/utils";
 import abi_cfa from "../abi_cfa.json";
@@ -25,11 +25,11 @@ const getSwappedTokens = async (
   const available = await contract.calculateAmount(address);
   setAvailableFdai(available);
   const timestamp = await contract.getUserTimestamp(address);
-  const newTimestamp = parseInt(timestamp._hex)
-  console.log(newTimestamp)
-  const formattedTimestamp = new Date(newTimestamp*1000);
-  console.log(formattedTimestamp)
-  setLastTimestamp(formattedTimestamp.toString())
+  const newTimestamp = parseInt(timestamp._hex);
+  console.log(newTimestamp);
+  const formattedTimestamp = new Date(newTimestamp * 1000);
+  console.log(formattedTimestamp);
+  setLastTimestamp(formattedTimestamp.toString());
 };
 
 const approve = async (initiated, flowRateCalc, dca_address, setApproval) => {
@@ -112,7 +112,7 @@ export default function DCA() {
   const [flowRateCalc, setFlowRateCalc] = useState("");
   const [wethBal, setWethBal] = useState();
   const [fdaiBal, setFdaiBal] = useState();
-  const [lastTimestamp, setLastTimestamp] = useState()
+  const [lastTimestamp, setLastTimestamp] = useState();
   const [availableFdai, setAvailableFdai] = useState();
   const dca_address = "0x90654b30AF2cB9108C9865fce7Bad9D2a8A8d528";
   const cfa_address = "0xcfA132E353cB4E398080B9700609bb008eceB125";
@@ -167,7 +167,12 @@ export default function DCA() {
       >
         <Header />
         {auth ? (
-          <Flex marginTop={["90px"]} flexDir={"column"} gap={"37px"}>
+          <Flex
+            marginTop={["90px"]}
+            flexDir={"column"}
+            gap={"37px"}
+            align={"center"}
+          >
             <Flex gap={"13px"} flexDir={"column"}>
               <Text
                 fontSize={["14px", "14px", "20px"]}
@@ -192,12 +197,12 @@ export default function DCA() {
                 _placeholder={{ color: "rgba(255,255,255,0.60)" }}
               />
             </Flex>
+
             {approval ? (
-              <>
+              <Flex flexDir={"column"} gap={"37px"} align={"center"}>
                 <Button
                   height={["40px", "40px", "62px"]}
                   width={["200px", "200px", "484px"]}
-                  marginRight={["8px", "8px", "16px"]}
                   border={"1px solid rgba(255, 255, 255, 0.2)"}
                   justify={"center"}
                   bg={"white"}
@@ -214,7 +219,6 @@ export default function DCA() {
                 <Button
                   height={["40px", "40px", "62px"]}
                   width={["200px", "200px", "484px"]}
-                  marginRight={["8px", "8px", "16px"]}
                   border={"1px solid rgba(255, 255, 255, 0.2)"}
                   justify={"center"}
                   bg={"white"}
@@ -228,95 +232,117 @@ export default function DCA() {
                 >
                   Manual Swap
                 </Button>
-                <Text
-                  fontSize={["14px", "14px", "20px"]}
-                  color={"white"}
-                  fontWeight={"medium"}
+
+                <Divider />
+
+                <Flex
+                  flexDir={"column"}
+                  width={["200px", "200px", "484px"]}
+                  gap={"15px"}
+                  cursor={"default"}
                 >
-                  WETH received till now
-                </Text>
-                <Text
-                  fontSize={["14px", "14px", "20px"]}
-                  color={"white"}
-                  fontWeight={"medium"}
-                >
-                  {wethBal == undefined ? (
-                    <Loading
-                      type="points-opacity"
-                      size={"lg"}
+                  <Flex justifyContent={"space-between"}>
+                    <Text
+                      fontSize={["14px", "14px", "20px"]}
                       color={"white"}
-                    />
-                  ) : (
-                    parseInt(wethBal._hex) / 1e18
-                  )}
-                </Text>
-                <Text
-                  fontSize={["14px", "14px", "20px"]}
-                  color={"white"}
-                  fontWeight={"medium"}
-                >
-                  fDAIx swapped till now
-                </Text>
-                <Text
-                  fontSize={["14px", "14px", "20px"]}
-                  color={"white"}
-                  fontWeight={"medium"}
-                >
-                  {fdaiBal == undefined ? (
-                    <Loading
-                      type="points-opacity"
-                      size={"lg"}
+                      fontWeight={"medium"}
+                    >
+                      WETH received till now
+                    </Text>
+                    <Text
+                      fontSize={["14px", "14px", "20px"]}
                       color={"white"}
-                    />
-                  ) : (
-                    parseInt(fdaiBal._hex) / 1e18
-                  )}
-                </Text>
-                <Text
-                  fontSize={["14px", "14px", "20px"]}
-                  color={"white"}
-                  fontWeight={"medium"}
-                >
-                  Available fDAIx for swap
-                </Text>
-                <Text
-                  fontSize={["14px", "14px", "20px"]}
-                  color={"white"}
-                  fontWeight={"medium"}
-                >
-                  {availableFdai == undefined ? (
-                    <Loading
-                      type="points-opacity"
-                      size={"lg"}
+                      fontWeight={"medium"}
+                    >
+                      {wethBal == undefined ? (
+                        <Loading
+                          type="points-opacity"
+                          size={"lg"}
+                          color={"white"}
+                        />
+                      ) : (
+                        parseInt(wethBal._hex) / 1e18
+                      )}
+                    </Text>
+                  </Flex>
+                  <Flex justifyContent={"space-between"}>
+                    <Text
+                      fontSize={["14px", "14px", "20px"]}
                       color={"white"}
-                    />
-                  ) : (
-                    parseInt(availableFdai._hex) / 1e18
-                  )}
-                </Text>
-                <Text
-                  fontSize={["14px", "14px", "20px"]}
-                  color={"white"}
-                  fontWeight={"medium"}
-                >
-                  Last Swap
-                </Text>
-                <Text
-                  fontSize={["14px", "14px", "20px"]}
-                  color={"white"}
-                  fontWeight={"medium"}
-                >
-                {lastTimestamp == undefined ? (
-                    <Loading
-                      type="points-opacity"
-                      size={"lg"}
+                      fontWeight={"medium"}
+                    >
+                      fDAIx swapped till now
+                    </Text>
+                    <Text
+                      fontSize={["14px", "14px", "20px"]}
                       color={"white"}
-                    />
-                  ) : (
-                    wethBal == 0 ? "none" : lastTimestamp
-                  )}
-                </Text>
-              </>
+                      fontWeight={"medium"}
+                    >
+                      {fdaiBal == undefined ? (
+                        <Loading
+                          type="points-opacity"
+                          size={"lg"}
+                          color={"white"}
+                        />
+                      ) : (
+                        parseInt(fdaiBal._hex) / 1e18
+                      )}
+                    </Text>
+                  </Flex>
+
+                  <Flex justifyContent={"space-between"}>
+                    <Text
+                      fontSize={["14px", "14px", "20px"]}
+                      color={"white"}
+                      fontWeight={"medium"}
+                    >
+                      Available fDAIx for swap
+                    </Text>
+                    <Text
+                      fontSize={["14px", "14px", "20px"]}
+                      color={"white"}
+                      fontWeight={"medium"}
+                    >
+                      {availableFdai == undefined ? (
+                        <Loading
+                          type="points-opacity"
+                          size={"lg"}
+                          color={"white"}
+                        />
+                      ) : (
+                        parseInt(availableFdai._hex) / 1e18
+                      )}
+                    </Text>
+                  </Flex>
+
+                  <Flex justifyContent={"space-between"}>
+                    <Text
+                      fontSize={["14px", "14px", "20px"]}
+                      color={"white"}
+                      fontWeight={"medium"}
+                    >
+                      Last Swap
+                    </Text>
+                    <Text
+                      fontSize={["14px", "14px", "20px"]}
+                      color={"white"}
+                      fontWeight={"medium"}
+                    >
+                      {lastTimestamp == undefined ? (
+                        <Loading
+                          type="points-opacity"
+                          size={"lg"}
+                          color={"white"}
+                        />
+                      ) : wethBal == 0 ? (
+                        "none"
+                      ) : (
+                        lastTimestamp
+                      )}
+                    </Text>
+                  </Flex>
+                </Flex>
+              </Flex>
             ) : approval == undefined ? (
               <>
                 <Flex justify={"center"} marginTop={"40px"}>
