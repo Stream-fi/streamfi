@@ -140,6 +140,7 @@ export default function Dashboard() {
   const [tokenBalances, setTokenBalances] = useState();
   const { address, isConnected } = useAccount();
   const [auth, setAuth] = useState();
+  const [chain, setChain] = useState();
 
   useEffect(() => {
     setAuth(isConnected);
@@ -148,7 +149,15 @@ export default function Dashboard() {
   useEffect(() => {
     if (auth) {
       (async function () {
-        setInitiated(await init());
+        const chainId = await window.ethereum.request({
+          method: "eth_chainId",
+        });
+        if (chainId == "0x5") {
+          setChain(true);
+          setInitiated(await init());
+        } else {
+          setChain(false);
+        }
       })();
     }
   }, [auth]);
@@ -217,7 +226,7 @@ export default function Dashboard() {
         color={"white"}
       >
         <Header />
-        {auth ? (
+        {auth ? chain ? (
           <Flex
             flexDir={"column"}
             w={"910px"}
@@ -275,7 +284,13 @@ export default function Dashboard() {
             )}
           </Flex>
         ) : (
-          <Flex marginTop={"200px"} w={"518px"} color={"white"}>
+          <Flex marginTop={"350px"} w={"400px"} color={"white"}>
+            <Text fontSize={"28px"} fontWeight={"medium"}>
+              Change Network to Goerli
+            </Text>
+          </Flex>
+        ) : (
+          <Flex marginTop={"350px"} w={"518px"} color={"white"}>
             <Text fontSize={"28px"} fontWeight={"medium"}>
               Connect Wallet to start using streamfi
             </Text>

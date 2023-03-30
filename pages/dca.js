@@ -20,16 +20,20 @@ const getSwappedTokens = async (
   const address = initiated[3];
   const contract = new ethers.Contract(dca_address, abi_dca.abi, signer);
   const tokens = await contract.getSwappedTokens(address);
-  setWethBal(tokens[0]);
-  setFdaiBal(tokens[1]);
+  console.log(parseInt(tokens[0]._hex))
+  setWethBal(Math.round(parseInt(tokens[0]._hex)/1e8)/1e10);
+  setFdaiBal(Math.round(parseInt(tokens[1]._hex)/1e14)/1e4);
   const available = await contract.calculateAmount(address);
-  setAvailableFdai(available);
+  setAvailableFdai(Math.round(parseInt(available._hex)/1e14)/1e4);
   const timestamp = await contract.getUserTimestamp(address);
   const newTimestamp = parseInt(timestamp._hex);
   console.log(newTimestamp);
   const formattedTimestamp = new Date(newTimestamp * 1000);
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+  const finalTimestamp = formattedTimestamp.getDate().toString() + " " + months[formattedTimestamp.getMonth()] + " " + formattedTimestamp.getFullYear().toString();
+  console.log(finalTimestamp);
   console.log(formattedTimestamp);
-  setLastTimestamp(formattedTimestamp.toString());
+  setLastTimestamp(finalTimestamp);
 };
 
 const approve = async (initiated, flowRateCalc, dca_address, setApproval) => {
@@ -114,6 +118,7 @@ export default function DCA() {
   const [fdaiBal, setFdaiBal] = useState();
   const [lastTimestamp, setLastTimestamp] = useState();
   const [availableFdai, setAvailableFdai] = useState();
+  const [chain, setChain] = useState();
   const dca_address = "0x90654b30AF2cB9108C9865fce7Bad9D2a8A8d528";
   const cfa_address = "0xcfA132E353cB4E398080B9700609bb008eceB125";
 
@@ -129,7 +134,15 @@ export default function DCA() {
   useEffect(() => {
     if (auth) {
       (async function () {
-        setInitiated(await init());
+        const chainId = await window.ethereum.request({
+          method: "eth_chainId",
+        });
+        if (chainId == "0x5") {
+          setChain(true);
+          setInitiated(await init());
+        } else {
+          setChain(false);
+        }
       })();
     }
   }, [auth]);
@@ -166,7 +179,7 @@ export default function DCA() {
         color={"white"}
       >
         <Header />
-        {auth ? (
+        {auth ? chain ? (
           <Flex
             marginTop={["90px"]}
             flexDir={"column"}
@@ -261,7 +274,7 @@ export default function DCA() {
                           color={"white"}
                         />
                       ) : (
-                        parseInt(wethBal._hex) / 1e18
+                        wethBal
                       )}
                     </Text>
                   </Flex>
@@ -285,7 +298,7 @@ export default function DCA() {
                           color={"white"}
                         />
                       ) : (
-                        parseInt(fdaiBal._hex) / 1e18
+                        fdaiBal
                       )}
                     </Text>
                   </Flex>
@@ -310,7 +323,7 @@ export default function DCA() {
                           color={"white"}
                         />
                       ) : (
-                        parseInt(availableFdai._hex) / 1e18
+                        availableFdai
                       )}
                     </Text>
                   </Flex>
@@ -370,7 +383,13 @@ export default function DCA() {
             )}
           </Flex>
         ) : (
-          <Flex marginTop={"200px"} w={"518px"} color={"white"}>
+          <Flex marginTop={"350px"} w={"400px"} color={"white"}>
+            <Text fontSize={"28px"} fontWeight={"medium"}>
+              Change Network to Goerli
+            </Text>
+          </Flex>
+        ) : (
+          <Flex marginTop={"350px"} w={"518px"} color={"white"}>
             <Text fontSize={"28px"} fontWeight={"medium"}>
               Connect Wallet to start using streamfi
             </Text>
