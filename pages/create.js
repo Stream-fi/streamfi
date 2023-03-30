@@ -86,6 +86,7 @@ export default function CreateFlow() {
   const [flowRateCalc, setFlowRateCalc] = useState("");
   const [token, setToken] = useState();
   const [selected, setSelected] = React.useState(new Set(["Select Token"]));
+  const [chain, setChain] = useState();
 
   const selectedValue = React.useMemo(
     () => Array.from(selected).join(", ").replaceAll("_", " "),
@@ -94,10 +95,18 @@ export default function CreateFlow() {
 
   useEffect(() => {
     if (auth) {
-    (async function () {
-      setInitiated(await init());
-    })();
-  }
+      (async function () {
+        const chainId = await window.ethereum.request({
+          method: "eth_chainId",
+        });
+        if (chainId == "0x5") {
+          setChain(true);
+          setInitiated(await init());
+        } else {
+          setChain(false);
+        }
+      })();
+    }
   }, [auth]);
 
   useEffect(() => {
@@ -157,15 +166,15 @@ export default function CreateFlow() {
     <>
       <Flex bg={"#0F1215"} flexDir={"column"} align={"center"} height="100vh">
         <Header />
-        {auth ? (
-          <Flex marginTop={["90px"]} flexDir={"column"} gap={"37px"}>
+        {auth ? chain ? (
+          <Flex marginTop={["150px"]} flexDir={"column"} gap={"37px"}>
             <Flex gap={"13px"} flexDir={"column"}>
               <Text
                 fontSize={["14px", "14px", "20px"]}
                 color={"white"}
                 fontWeight={"medium"}
               >
-                Reciever Wallet Address
+                Receiver Wallet Address
               </Text>
               <Input
                 width={["200px", "200px", "484px"]}
@@ -207,27 +216,6 @@ export default function CreateFlow() {
                 _placeholder={{ color: "rgba(255,255,255,0.60)" }}
               />
             </Flex>
-
-            {/* <Select
-              borderRadius={"6px"}
-              width={["200px", "200px", "484px"]}
-              height={["40px", "40px", "62px"]}
-              border={"1px solid rgba(255,255,255,0.40)"}
-              onChange={handleTokenChange}
-              color={"white"}
-              placeholder="Select Token"
-              focusBorderColor={"rgba(255, 255, 255, 0.5)"}
-            >
-              <option value="fdaix" style={{ color: "black" }}>
-                fDAIx
-              </option>
-              <option value="ftusdx" style={{ color: "black" }}>
-                fTUSDx
-              </option>
-              <option value="fusdcx" style={{ color: "black" }}>
-                fUSDCx
-              </option>
-            </Select> */}
 
             <Dropdown>
               <Dropdown.Button
@@ -294,58 +282,18 @@ export default function CreateFlow() {
             </CreateButton>
           </Flex>
         ) : (
-          <Flex marginTop={"200px"} w={"518px"} color={"white"}>
+          <Flex marginTop={"350px"} w={"400px"} color={"white"}>
+            <Text fontSize={"28px"} fontWeight={"medium"}>
+              Change Network to Goerli
+            </Text>
+          </Flex>
+        ) : (
+          <Flex marginTop={"350px"} w={"518px"} color={"white"}>
             <Text fontSize={"28px"} fontWeight={"medium"}>
               Connect Wallet to start using streamfi
             </Text>
           </Flex>
         )}
-
-        {/* <Flex marginTop={["90px"]} flexDir={"column"} gap={"37px"}>
-          <Text fontSize={["24px"]} color={"white"}>
-            Delete Stream
-          </Text>
-          <Flex gap={"13px"} flexDir={"column"}>
-            <Text fontSize={["14px", "14px", "20px"]} color={"white"}>
-              Reciever Wallet Address
-            </Text>
-            <Input
-              width={["200px", "200px", "484px"]}
-              height={["40px", "40px", "50px"]}
-              border={"1px solid rgba(255, 255, 255, 0.2)"}
-              borderRadius={"6px"}
-              bg={"none"}
-              color={"white"}
-              fontSize={["12px", "12px", "18px"]}
-              _hover={{}}
-              focusBorderColor={"rgba(255, 255, 255, 0.5)"}
-              value={recipient}
-              onChange={handleRecipientChange}
-              placeholder="0x..."
-            />
-          </Flex>
-          <CreateButton
-            bg={"none"}
-            height={["40px", "40px", "50px"]}
-            width={["200px", "200px", "484px"]}
-            marginRight={["8px", "8px", "16px"]}
-            border={"1px solid rgba(255, 255, 255, 0.2)"}
-            justify={"center"}
-            color={"white"}
-            borderRadius={"10px"}
-            fontSize={["12px", "12px", "20px"]}
-            _hover={{}}
-            onClick={() => {
-              setIsButtonLoading(true);
-              deleteExistingFlow(recipient, setSuccess, setFailure, initiated);
-              setTimeout(() => {
-                setIsButtonLoading(false);
-              }, 1000);
-            }}
-          >
-            Click to delete Stream
-          </CreateButton>
-        </Flex> */}
       </Flex>
     </>
   );

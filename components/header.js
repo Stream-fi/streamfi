@@ -5,60 +5,7 @@ import { ConnectBtn } from "./custombutton";
 import { useRouter } from "next/router";
 export default function Header() {
   const router = useRouter();
-  const [isConnected, setIsConnected] = useState(false);
-  const [currentAccount, setCurrentAccount] = useState("");
   const [header, setHeader] = useState("");
-
-  // const checkIfWalletIsConnected = async () => {
-  //   console.log("runs");
-  //   const { ethereum } = window;
-
-  //   if (!ethereum) {
-  //     console.log("Make sure you have metamask!");
-  //     return;
-  //   } else {
-  //     console.log("We have the ethereum object", ethereum);
-  //     setIsConnected(true);
-  //   }
-
-  //   const accounts = await window.ethereum.request({ method: "eth_accounts" });
-  //   const chain = await window.ethereum.request({ method: "eth_chainId" });
-  //   let chainId = chain;
-  //   console.log("chain ID:", chain);
-  //   console.log("global Chain Id:", chainId);
-  //   if (accounts.length !== 0) {
-  //     console.log("Found an authorized account:", accounts[0]);
-  //     setCurrentAccount(accounts[0]);
-  //   } else {
-  //     console.log("No authorized account found");
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   checkIfWalletIsConnected();
-  // }, []);
-
-  const connectWallet = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) {
-        alert("Get MetaMask!");
-        return;
-      }
-      const accounts = await ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      console.log("Connected", accounts[0]);
-      setIsConnected(true);
-      setCurrentAccount(accounts[0]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const disconnectHandler = () => {
-    setIsConnected(false);
-  };
 
   useEffect(() => {
     const path = router.asPath;
@@ -66,6 +13,8 @@ export default function Header() {
       setHeader("create");
     } else if (path == "/dashboard") {
       setHeader("dashboard");
+    } else if (path == "/dca") {
+      setHeader("dca");
     }
   }, [router.asPath]);
 
@@ -104,6 +53,16 @@ export default function Header() {
                 _hover={{ opacity: "80%" }}
               >
                 Dashboard
+              </Text>
+            </Link>
+            <Link href={"./dca"}>
+              <Text
+                fontSize={"20px"}
+                fontWeight={"medium"}
+                opacity={header == "dca" ? "100%" : "70%"}
+                _hover={{ opacity: "80%" }}
+              >
+                DCA
               </Text>
             </Link>
           </Flex>
