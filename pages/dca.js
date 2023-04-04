@@ -119,7 +119,7 @@ export default function DCA() {
   const [lastTimestamp, setLastTimestamp] = useState();
   const [availableFdai, setAvailableFdai] = useState();
   const [chain, setChain] = useState();
-  const dca_address = "0x90654b30AF2cB9108C9865fce7Bad9D2a8A8d528";
+  const dca_address = "0xf96e197fE7b05407dA8d0b38D75e371CbA8e22c6";
   const cfa_address = "0xcfA132E353cB4E398080B9700609bb008eceB125";
 
   const handleFlowRateChange = (e) => {

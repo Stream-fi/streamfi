@@ -67,42 +67,8 @@ export default function Header() {
             </Link>
           </Flex>
           <ConnectBtn />
-          {/* <Button
-            bg={"none"}
-            height={["30px", "30px", "40px"]}
-            width={["110px", "110px", "190px"]}
-            marginRight={["8px", "8px", "16px"]}
-            border={"1px solid rgba(255, 255, 255, 0.2)"}
-            justify={"center"}
-            color={"white"}
-            borderRadius={"10px"}
-            fontSize={["12px", "12px", "20px"]}
-            _hover={{}}
-            onClick={isConnected ? disconnectHandler : connectWallet}
-          >
-            {isConnected
-              ? `${currentAccount.substring(0, 4)}...${currentAccount.substring(
-                  38
-                )}`
-              : "Connect Wallet"}
-          </Button> */}
         </Flex>
       </Flex>
-      {/* <Flex marginTop={"100px"}>
-          {auth ? (
-            <>
-              {stream ? <Stream /> : <></>}
-              {dashboard ? <Dashboard /> : <></>}
-            </>
-          ) : (
-            <Flex marginTop={"200px"} w={"518px"}>
-              <Text fontSize={"28px"} fontWeight={"medium"}>
-                Connect Wallet to start using streamfi
-              </Text>
-            </Flex>
-          )}
-        </Flex>
-      </Flex> */}
     </>
   );
 }
