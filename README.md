@@ -1,38 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Streamfi
+### The project has the following objectives:
 
-## Getting Started
+### Creating/Managing Streams
+The primary goal is to allow the users to create
+token streams for various applications like Salaries, Subscriptions. etc. and also
+create a receiving party dashboard for the same.
 
-First, run the development server:
+### Dollar Cost Averaging
+DCA, in simpler terms is reducing user risk by
+swapping/buying tokens along the curve at regular intervals rather than doing
+so in a chunk. This essentially buys the token at an “average cost”. As an added
+benefit, diverging your orders reduces slippage for traders, which becomes a
+huge problems for DEX pools with limited liquidity.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+## Problems Solved:
+
+1. Bringing traditional finance applications like multiple accounts with “saving”
+opportunities to Defi.
+
+2. Providing a platform to users to unleash the functionality of creating streams for
+salaries, memberships, and anything they wish to create with those streams.
+
+3. Providing Novice users a “safer” gateway into Defi with DCA so that they do not
+have to worry about fluctuation in prices and slippages.
+
+4. To promote the use of streams in the ecosystem. Using streams instead of
+chunks helps reduce volatility of assets, inducing more trust in the ecosystem as
+a whole.
+
+
+
+# Running the app
+
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+npm install
+npm run dev
+```
