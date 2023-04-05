@@ -2,11 +2,12 @@ import { ethers } from "ethers";
 import abi_dca from "../abi_dca.json";
 import Header from "@/components/header";
 import { useState, useEffect } from "react";
-import { Flex, Input, Text, Button, Divider } from "@chakra-ui/react";
+import { Flex, Input, Text, Button, Divider, Tooltip } from "@chakra-ui/react";
 import { useAccount } from "wagmi";
 import { init, calculateFlowRate } from "@/utils";
 import abi_cfa from "../abi_cfa.json";
 import { Loading } from "@nextui-org/react";
+import { InfoIcon } from "@chakra-ui/icons";
 
 const getSwappedTokens = async (
   initiated,
@@ -20,17 +21,35 @@ const getSwappedTokens = async (
   const address = initiated[3];
   const contract = new ethers.Contract(dca_address, abi_dca.abi, signer);
   const tokens = await contract.getSwappedTokens(address);
-  console.log(parseInt(tokens[0]._hex))
-  setWethBal(Math.round(parseInt(tokens[0]._hex)/1e8)/1e10);
-  setFdaiBal(Math.round(parseInt(tokens[1]._hex)/1e14)/1e4);
+  console.log(parseInt(tokens[0]._hex));
+  setWethBal(Math.round(parseInt(tokens[0]._hex) / 1e8) / 1e10);
+  setFdaiBal(Math.round(parseInt(tokens[1]._hex) / 1e14) / 1e4);
   const available = await contract.calculateAmount(address);
-  setAvailableFdai(Math.round(parseInt(available._hex)/1e14)/1e4);
+  setAvailableFdai(Math.round(parseInt(available._hex) / 1e14) / 1e4);
   const timestamp = await contract.getUserTimestamp(address);
   const newTimestamp = parseInt(timestamp._hex);
   console.log(newTimestamp);
   const formattedTimestamp = new Date(newTimestamp * 1000);
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
-  const finalTimestamp = formattedTimestamp.getDate().toString() + " " + months[formattedTimestamp.getMonth()] + " " + formattedTimestamp.getFullYear().toString();
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "June",
+    "July",
+    "Aug",
+    "Sept",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const finalTimestamp =
+    formattedTimestamp.getDate().toString() +
+    " " +
+    months[formattedTimestamp.getMonth()] +
+    " " +
+    formattedTimestamp.getFullYear().toString();
   console.log(finalTimestamp);
   console.log(formattedTimestamp);
   setLastTimestamp(finalTimestamp);
@@ -179,43 +198,235 @@ export default function DCA() {
         color={"white"}
       >
         <Header />
-        {auth ? chain ? (
-          <Flex
-            marginTop={["90px"]}
-            flexDir={"column"}
-            gap={"37px"}
-            align={"center"}
-          >
-            <Flex gap={"13px"} flexDir={"column"}>
-              <Text
-                fontSize={["14px", "14px", "20px"]}
-                color={"white"}
-                fontWeight={"medium"}
-              >
-                Flow Rate for DCA
-              </Text>
-              <Input
-                width={["200px", "200px", "484px"]}
-                height={["40px", "40px", "62px"]}
-                border={"1px solid rgba(255,255,255,0.40)"}
-                borderRadius={"6px"}
-                bg={"none"}
-                color={"white"}
-                fontSize={["12px", "12px", "18px"]}
-                _hover={{}}
-                focusBorderColor={"rgba(255, 255, 255, 0.5)"}
-                value={flowRate}
-                onChange={handleFlowRateChange}
-                placeholder="Enter fDAIx/month for DCA"
-                _placeholder={{ color: "rgba(255,255,255,0.60)" }}
-              />
-            </Flex>
+        {auth ? (
+          chain ? (
+            <Flex
+              marginTop={["90px"]}
+              flexDir={"column"}
+              gap={"37px"}
+              align={"center"}
+            >
+              <Flex gap={"13px"} flexDir={"column"}>
+                <Text
+                  fontSize={["14px", "14px", "20px"]}
+                  color={"white"}
+                  fontWeight={"medium"}
+                >
+                  Flow Rate for DCA
+                </Text>
+                <Input
+                  width={["200px", "200px", "484px"]}
+                  height={["40px", "40px", "62px"]}
+                  border={"1px solid rgba(255,255,255,0.40)"}
+                  borderRadius={"6px"}
+                  bg={"none"}
+                  color={"white"}
+                  fontSize={["12px", "12px", "18px"]}
+                  _hover={{}}
+                  focusBorderColor={"rgba(255, 255, 255, 0.5)"}
+                  value={flowRate}
+                  onChange={handleFlowRateChange}
+                  placeholder="Enter fDAIx/month for DCA"
+                  _placeholder={{ color: "rgba(255,255,255,0.60)" }}
+                />
+              </Flex>
 
-            {approval ? (
-              <Flex flexDir={"column"} gap={"37px"} align={"center"}>
+              {approval ? (
+                <Flex flexDir={"column"} gap={"37px"} align={"center"}>
+                  <Button
+                    height={["40px", "40px", "62px"]}
+                    width={["200px", "200px", "484px"]}
+                    border={"1px solid rgba(255, 255, 255, 0.2)"}
+                    justify={"center"}
+                    bg={"white"}
+                    color={"#0F1215"}
+                    borderRadius={"6px"}
+                    fontSize={["12px", "12px", "20px"]}
+                    _hover={{}}
+                    onClick={() => {
+                      startFlow(initiated, flowRateCalc, dca_address);
+                    }}
+                  >
+                    Click to start Flow
+                  </Button>
+                  <Button
+                    height={["40px", "40px", "62px"]}
+                    width={["200px", "200px", "484px"]}
+                    border={"1px solid rgba(255, 255, 255, 0.2)"}
+                    justify={"center"}
+                    bg={"white"}
+                    color={"#0F1215"}
+                    borderRadius={"6px"}
+                    fontSize={["12px", "12px", "20px"]}
+                    _hover={{}}
+                    onClick={async () => {
+                      await manualSwap(initiated, dca_address);
+                    }}
+                  >
+                    Manual Swap
+                  </Button>
+
+                  <Divider />
+
+                  <Flex
+                    flexDir={"column"}
+                    width={["200px", "200px", "484px"]}
+                    gap={"15px"}
+                    cursor={"default"}
+                  >
+                    <Flex justifyContent={"space-between"}>
+                      <Flex gap={"10px"} alignItems={"center"}>
+                        <Text
+                          fontSize={["14px", "14px", "20px"]}
+                          color={"white"}
+                          fontWeight={"medium"}
+                        >
+                          WETH received
+                        </Text>
+                        <Tooltip
+                          label="Swapped tokens are automatically transferred to your account"
+                          textAlign={"center"}
+                          fontSize="md"
+                        >
+                          <InfoIcon />
+                        </Tooltip>
+                      </Flex>
+                      <Text
+                        fontSize={["14px", "14px", "20px"]}
+                        color={"white"}
+                        fontWeight={"medium"}
+                      >
+                        {wethBal == undefined ? (
+                          <Loading
+                            type="points-opacity"
+                            size={"lg"}
+                            color={"white"}
+                          />
+                        ) : (
+                          wethBal
+                        )}
+                      </Text>
+                    </Flex>
+                    <Flex justifyContent={"space-between"}>
+                      <Flex gap={"10px"} alignItems={"center"}>
+                        <Text
+                          fontSize={["14px", "14px", "20px"]}
+                          color={"white"}
+                          fontWeight={"medium"}
+                        >
+                          fDAIx swapped
+                        </Text>
+                        <Tooltip
+                          label="Amount of tokens our contract has swapped"
+                          textAlign={"center"}
+                          fontSize="md"
+                        >
+                          <InfoIcon />
+                        </Tooltip>
+                      </Flex>
+                      <Text
+                        fontSize={["14px", "14px", "20px"]}
+                        color={"white"}
+                        fontWeight={"medium"}
+                      >
+                        {fdaiBal == undefined ? (
+                          <Loading
+                            type="points-opacity"
+                            size={"lg"}
+                            color={"white"}
+                          />
+                        ) : (
+                          fdaiBal
+                        )}
+                      </Text>
+                    </Flex>
+
+                    <Flex justifyContent={"space-between"}>
+                      <Flex gap={"10px"} alignItems={"center"}>
+                      <Text
+                        fontSize={["14px", "14px", "20px"]}
+                        color={"white"}
+                        fontWeight={"medium"}
+                      >
+                        fDAIx available
+                      </Text>
+                      <Tooltip
+                          label="Amount of your tokens in our contract"
+                          textAlign={"center"}
+                          fontSize="md"
+                        >
+                          <InfoIcon />
+                        </Tooltip>
+                      </Flex>
+                      <Text
+                        fontSize={["14px", "14px", "20px"]}
+                        color={"white"}
+                        fontWeight={"medium"}
+                      >
+                        {availableFdai == undefined ? (
+                          <Loading
+                            type="points-opacity"
+                            size={"lg"}
+                            color={"white"}
+                          />
+                        ) : (
+                          availableFdai
+                        )}
+                      </Text>
+                    </Flex>
+
+                    <Flex justifyContent={"space-between"}>
+                      <Flex gap={"10px"} alignItems={"center"}>
+                      <Text
+                        fontSize={["14px", "14px", "20px"]}
+                        color={"white"}
+                        fontWeight={"medium"}
+                      >
+                        Last Swap
+                      </Text>
+                      <Tooltip
+                          label="Time of last token swap"
+                          textAlign={"center"}
+                          fontSize="md"
+                        >
+                          <InfoIcon />
+                        </Tooltip>
+                      </Flex>
+                      <Text
+                        fontSize={["14px", "14px", "20px"]}
+                        color={"white"}
+                        fontWeight={"medium"}
+                      >
+                        {lastTimestamp == undefined ? (
+                          <Loading
+                            type="points-opacity"
+                            size={"lg"}
+                            color={"white"}
+                          />
+                        ) : wethBal == 0 ? (
+                          "none"
+                        ) : (
+                          lastTimestamp
+                        )}
+                      </Text>
+                    </Flex>
+                  </Flex>
+                </Flex>
+              ) : approval == undefined ? (
+                <>
+                  <Flex justify={"center"} marginTop={"40px"}>
+                    <Loading
+                      type="points-opacity"
+                      size={"lg"}
+                      color={"white"}
+                    />
+                  </Flex>
+                </>
+              ) : (
                 <Button
                   height={["40px", "40px", "62px"]}
                   width={["200px", "200px", "484px"]}
+                  marginRight={["8px", "8px", "16px"]}
                   border={"1px solid rgba(255, 255, 255, 0.2)"}
                   justify={"center"}
                   bg={"white"}
@@ -224,170 +435,20 @@ export default function DCA() {
                   fontSize={["12px", "12px", "20px"]}
                   _hover={{}}
                   onClick={() => {
-                    startFlow(initiated, flowRateCalc, dca_address);
+                    approve(initiated, flowRateCalc, dca_address, setApproval);
                   }}
                 >
-                  Click to start Flow
+                  Click to approve stream
                 </Button>
-                <Button
-                  height={["40px", "40px", "62px"]}
-                  width={["200px", "200px", "484px"]}
-                  border={"1px solid rgba(255, 255, 255, 0.2)"}
-                  justify={"center"}
-                  bg={"white"}
-                  color={"#0F1215"}
-                  borderRadius={"6px"}
-                  fontSize={["12px", "12px", "20px"]}
-                  _hover={{}}
-                  onClick={async () => {
-                    await manualSwap(initiated, dca_address);
-                  }}
-                >
-                  Manual Swap
-                </Button>
-
-                <Divider />
-
-                <Flex
-                  flexDir={"column"}
-                  width={["200px", "200px", "484px"]}
-                  gap={"15px"}
-                  cursor={"default"}
-                >
-                  <Flex justifyContent={"space-between"}>
-                    <Text
-                      fontSize={["14px", "14px", "20px"]}
-                      color={"white"}
-                      fontWeight={"medium"}
-                    >
-                      WETH received till now
-                    </Text>
-                    <Text
-                      fontSize={["14px", "14px", "20px"]}
-                      color={"white"}
-                      fontWeight={"medium"}
-                    >
-                      {wethBal == undefined ? (
-                        <Loading
-                          type="points-opacity"
-                          size={"lg"}
-                          color={"white"}
-                        />
-                      ) : (
-                        wethBal
-                      )}
-                    </Text>
-                  </Flex>
-                  <Flex justifyContent={"space-between"}>
-                    <Text
-                      fontSize={["14px", "14px", "20px"]}
-                      color={"white"}
-                      fontWeight={"medium"}
-                    >
-                      fDAIx swapped till now
-                    </Text>
-                    <Text
-                      fontSize={["14px", "14px", "20px"]}
-                      color={"white"}
-                      fontWeight={"medium"}
-                    >
-                      {fdaiBal == undefined ? (
-                        <Loading
-                          type="points-opacity"
-                          size={"lg"}
-                          color={"white"}
-                        />
-                      ) : (
-                        fdaiBal
-                      )}
-                    </Text>
-                  </Flex>
-
-                  <Flex justifyContent={"space-between"}>
-                    <Text
-                      fontSize={["14px", "14px", "20px"]}
-                      color={"white"}
-                      fontWeight={"medium"}
-                    >
-                      Available fDAIx for swap
-                    </Text>
-                    <Text
-                      fontSize={["14px", "14px", "20px"]}
-                      color={"white"}
-                      fontWeight={"medium"}
-                    >
-                      {availableFdai == undefined ? (
-                        <Loading
-                          type="points-opacity"
-                          size={"lg"}
-                          color={"white"}
-                        />
-                      ) : (
-                        availableFdai
-                      )}
-                    </Text>
-                  </Flex>
-
-                  <Flex justifyContent={"space-between"}>
-                    <Text
-                      fontSize={["14px", "14px", "20px"]}
-                      color={"white"}
-                      fontWeight={"medium"}
-                    >
-                      Last Swap
-                    </Text>
-                    <Text
-                      fontSize={["14px", "14px", "20px"]}
-                      color={"white"}
-                      fontWeight={"medium"}
-                    >
-                      {lastTimestamp == undefined ? (
-                        <Loading
-                          type="points-opacity"
-                          size={"lg"}
-                          color={"white"}
-                        />
-                      ) : wethBal == 0 ? (
-                        "none"
-                      ) : (
-                        lastTimestamp
-                      )}
-                    </Text>
-                  </Flex>
-                </Flex>
-              </Flex>
-            ) : approval == undefined ? (
-              <>
-                <Flex justify={"center"} marginTop={"40px"}>
-                  <Loading type="points-opacity" size={"lg"} color={"white"} />
-                </Flex>
-              </>
-            ) : (
-              <Button
-                height={["40px", "40px", "62px"]}
-                width={["200px", "200px", "484px"]}
-                marginRight={["8px", "8px", "16px"]}
-                border={"1px solid rgba(255, 255, 255, 0.2)"}
-                justify={"center"}
-                bg={"white"}
-                color={"#0F1215"}
-                borderRadius={"6px"}
-                fontSize={["12px", "12px", "20px"]}
-                _hover={{}}
-                onClick={() => {
-                  approve(initiated, flowRateCalc, dca_address, setApproval);
-                }}
-              >
-                Click to approve stream
-              </Button>
-            )}
-          </Flex>
-        ) : (
-          <Flex marginTop={"350px"} w={"400px"} color={"white"}>
-            <Text fontSize={"28px"} fontWeight={"medium"}>
-              Change Network to Goerli
-            </Text>
-          </Flex>
+              )}
+            </Flex>
+          ) : (
+            <Flex marginTop={"350px"} w={"400px"} color={"white"}>
+              <Text fontSize={"28px"} fontWeight={"medium"}>
+                Change Network to Goerli
+              </Text>
+            </Flex>
+          )
         ) : (
           <Flex marginTop={"350px"} w={"518px"} color={"white"}>
             <Text fontSize={"28px"} fontWeight={"medium"}>
